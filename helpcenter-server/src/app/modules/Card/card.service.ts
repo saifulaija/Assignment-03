@@ -1,0 +1,44 @@
+import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { TCard } from './card.interface';
+import { Card } from './card.model';
+import { cardSearchableFields } from './card.constant';
+
+
+
+const createCardIntoDB = async (payload: TCard) => {
+  const result = await Card.create(payload);
+  return result;
+};
+
+const getAllCardsFromDB = async (query: Record<string, unknown>) => {
+  const CardQuery = new QueryBuilder(
+    Card.find({ isDeleted: false }),
+    query,
+  )
+    .search(cardSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await CardQuery.modelQuery;
+  const meta = await CardQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
+const getSingleCard=async(title:string)=>{
+    console.log(title);
+    
+}
+
+export const CardServices = {
+  createCardIntoDB,
+  getAllCardsFromDB,
+  getSingleCard
+ 
+};

@@ -18,10 +18,10 @@ app.use(cookieParser());
 app.use(cors({origin:'http://localhost:5173',credentials:true}))
 
 // application routes
-app.use('/api', router);
+app.use('/', router);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hi Next Level Developer !');
+  res.send('Help center is running !');
 });
 
 app.use(globalErrorHandler);
