@@ -4,6 +4,9 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Header from "@/components/shared/Header";
+import { ToastContainer } from "react-toastify";
+import Providers from "@/lib/provider/Provider";
+import { ThemeProvider } from "@/lib/provider/theme-provider";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -27,11 +30,18 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-       <div>
-        <Header/>
-         {children}
-
-       </div>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header/>
+            {children}
+          </ThemeProvider>
+        </Providers>
+        <ToastContainer />
       </body>
     </html>
   );
