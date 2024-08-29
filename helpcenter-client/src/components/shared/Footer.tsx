@@ -1,4 +1,7 @@
+'use client'
+
 import assets from "@/assets";
+import Image from "next/image";
 
 const Footer = () => {
   const resources = [
@@ -94,11 +97,7 @@ const Footer = () => {
 
           {/* Logo and Copyright Section */}
           <div className="w-full sm:w-1/5 mb-6 mt-40">
-            <img
-              src={assets.images.logo}
-              alt="Abstract Studio Design Logo"
-              className="w-8 h-8 mb-2"
-            />
+            <Image src={assets.images.logo} width={50} height={50} alt="logo" />
             <p className="text-sm mb-1">Copyright © 2022</p>
             <p className="text-sm mb-1">Abstract Studio Design, Inc.</p>
             <p className="text-sm">All rights reserved</p>
