@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 import {
   BaseQueryApi,
@@ -9,7 +9,7 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api",
+  baseUrl: "http://localhost:5000",
   credentials: "include",
 });
 

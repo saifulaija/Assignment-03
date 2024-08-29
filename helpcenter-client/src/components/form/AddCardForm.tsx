@@ -29,10 +29,8 @@ const formSchema = z.object({
 });
 
 const CreateCardForm = () => {
-    const router=useRouter();
+  const router = useRouter();
   const [createCard, { isLoading }] = useCreateCardMutation();
-
-  const [error, setError] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,10 +41,11 @@ const CreateCardForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
- 
+    console.log(values);
 
     try {
       const res = await createCard(values).unwrap();
+      console.log(res);
 
       if (res?.data) {
         toast.success("user added successfully", { position: "bottom-left" });
@@ -60,7 +59,7 @@ const CreateCardForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <div className="w-full space-y-4 md:px-4 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center items-center">
+          <div className="">
             <FormField
               control={form.control}
               name="title"
