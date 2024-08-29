@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useCreateCardMutation } from "@/redux/features/card/cardApi";
 import { toast } from "react-toastify";
 import LoadingButton from "../shared/LoadingButton";
+import { createCard } from "@/actions/createCard";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -30,7 +31,8 @@ const formSchema = z.object({
 
 const CreateCardForm = () => {
   const router = useRouter();
-  const [createCard, { isLoading }] = useCreateCardMutation();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,15 +46,19 @@ const CreateCardForm = () => {
     console.log(values);
 
     try {
-      const res = await createCard(values).unwrap();
-      console.log(res);
+      const res = await createCard(values);
 
       if (res?.data) {
-        toast.success("user added successfully", { position: "bottom-left" });
-        router.push("/");
+       
+     toast.success('Card added successfully')
+        router.push('/');
+      } else {
+        setError(res?.message || "An unexpected error occurred.");
       }
     } catch (err: any) {
-      toast.error(err?.message, { position: "bottom-left" });
+      setError(err?.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -100,7 +106,7 @@ const CreateCardForm = () => {
           <LoadingButton
             type="submit"
             className="w-full font-semibold"
-            loading={isLoading}
+            loading={loading}
           >
             Add Card
           </LoadingButton>

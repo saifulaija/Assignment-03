@@ -1,73 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
 
-import { TCard, TQueryParam, TResponseRedux } from "@/types/global.type";
-import { baseApi } from "../../api/baseApi";
-// import { Tcard } from "@/types/card";
-
-const cardApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
- 
-
-    getAllCards: builder.query({
-      query: (args) => {
-        const params = new URLSearchParams();
-
-        if (args) {
-          args.forEach((item: TQueryParam) => {
-            params.append(item?.name, item?.value as string);
-          });
-        }
-
-        return {
-          url: "/cards",
-          method: "GET",
-          params: params,
-        };
-      },
-      providesTags: ["card"],
-      transformResponse: (response: TResponseRedux<TCard[]>) => {
-        return {
-          data: response.data,
-        };
-      },
+export const CardsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getCards: build.query({
+      query: () => ({
+        url: "/",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.card],
     }),
 
-    createCard: builder.mutation({
-      query: (cardInfo) => ({
-        url: "/cards",
+    addCards: build.mutation({
+      query: (data) => ({
+        url: "/",
         method: "POST",
-        body: cardInfo,
+        body: data,
       }),
-      invalidatesTags: ["card"],
-    }),
-
-  
-
- 
-
-    deleteCard: builder.mutation({
-      query: (id) => ({
-        url: `/cards/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["card"],
-    }),
-
-    getSingleCard: builder.query({
-      query: (cardTitle) => {
-        return {
-          url: `/cards/${cardTitle}`,
-          method: "Get",
-        };
-      },
-      providesTags: ["card"],
+      invalidatesTags: [tagTypes.card],
     }),
   }),
 });
 
-export const {
-useCreateCardMutation,
-useGetSingleCardQuery,
-useGetAllCardsQuery
-
-} = cardApi;
+export const { useGetCardsQuery, useAddCardsMutation } = CardsApi;

@@ -36,7 +36,7 @@ export type TCard = {
   title: string;
   description: string;
   
-  isDeleted: boolean;
+  _id:string
   
 };
 

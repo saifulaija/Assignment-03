@@ -13,7 +13,7 @@ const createCardIntoDB = async (payload: TCard) => {
 
 const getAllCardsFromDB = async (query: Record<string, unknown>) => {
   const CardQuery = new QueryBuilder(
-    Card.find({ isDeleted: false }),
+    Card.find(),
     query,
   )
     .search(cardSearchableFields)
