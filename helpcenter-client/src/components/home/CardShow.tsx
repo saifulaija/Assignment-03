@@ -7,10 +7,11 @@ import CardData from "./CardData";
 import SearchBar from "../shared/SearchBar";
 import { TCard } from "@/types/global.type";
 import { useGetCardsQuery } from "@/redux/features/card/cardApi";
+import Loader from "@/app/loading";
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data } = useGetCardsQuery({});
+  const { data,isLoading } = useGetCardsQuery({});
 
   const filteredCards = data?.data?.filter((card: TCard) =>
     card.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -19,7 +20,7 @@ const HomePage = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
-
+if(isLoading) <Loader/>
   return (
     <div className="container mx-auto">
       <SearchBar onSearch={handleSearch} />

@@ -12,6 +12,13 @@ export const CardsApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.card],
     }),
+    getSingleCards: build.query({
+      query: (title) => ({
+        url: `/${title}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.card],
+    }),
 
     addCards: build.mutation({
       query: (data) => ({
@@ -24,4 +31,4 @@ export const CardsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetCardsQuery, useAddCardsMutation } = CardsApi;
+export const { useGetCardsQuery, useAddCardsMutation,useGetSingleCardsQuery } = CardsApi;

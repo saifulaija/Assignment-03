@@ -15,10 +15,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
-import { useCreateCardMutation } from "@/redux/features/card/cardApi";
+
 import { toast } from "react-toastify";
 import LoadingButton from "../shared/LoadingButton";
-import { createCard } from "@/actions/createCard";
+
+import { useAddCardsMutation } from "@/redux/features/card/cardApi";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -30,6 +31,7 @@ const formSchema = z.object({
 });
 
 const CreateCardForm = () => {
+  const [createCard, { isLoading }] = useAddCardsMutation();
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,17 +51,12 @@ const CreateCardForm = () => {
       const res = await createCard(values);
 
       if (res?.data) {
-       
-     toast.success('Card added successfully')
-        router.push('/');
-      } else {
-        setError(res?.message || "An unexpected error occurred.");
-      }
+        toast.success("Card added successfully");
+        router.push("/");
+      } 
     } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred.");
-    } finally {
-      setLoading(false);
-    }
+     toast.warning('something went wrong')
+    } 
   };
   return (
     <Form {...form}>

@@ -13,7 +13,7 @@ router.post(
 );
 
 router.get(
-  '//:title',
+  '/:title',
 
   CardControllers.getSingleCard,
 );

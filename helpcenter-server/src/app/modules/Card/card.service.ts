@@ -32,7 +32,8 @@ const getAllCardsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleCard=async(title:string)=>{
-    console.log(title);
+   const result=await Card.findOne({title})
+   return result
     
 }
 
