@@ -13,89 +13,47 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { toast, useToast } from "../ui/use-toast";
-import { uploadImage } from "@/utils/imgbb";
-import { Loader } from "lucide-react";
+
 import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Gender } from "@/types";
-import { useCreateAuthorMutation } from "@/redux/features/blogger/bloggerApi";
-import { getUserInfo } from "@/services/authServices";
-import { Card } from "../ui/card";
-import { cn } from "@/lib/utils";
-import { Separator } from "../ui/separator";
+import { useCreateCardMutation } from "@/redux/features/card/cardApi";
+import { toast } from "react-toastify";
+import LoadingButton from "../shared/LoadingButton";
+
 const formSchema = z.object({
-  email: z.string().email({
-    message: "Please enter valid email",
+  title: z.string().min(1, {
+    message: "Enter card title",
   }),
-  password: z.string().min(6, {
-    message: "Password at least 6 characters",
+  description: z.string().min(1, {
+    message: "Enter card description",
   }),
-  name: z.string().min(1, {
-    message: "Enter your yserName",
-  }),
-  contactNumber: z.string().min(1, {
-    message: "Enter your contact number",
-  }),
-  // gender:z.enum(["MALE", "FEMALE"]),
-  gender: z.string(),
-  profilePhoto: z.any(),
 });
 
-const CreateAuthorForm = () => {
-  const [createModerator, { isLoading }] = useCreateAuthorMutation();
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+const CreateCardForm = () => {
+    const router=useRouter();
+  const [createCard, { isLoading }] = useCreateCardMutation();
+
   const [error, setError] = useState("");
-  const {} = useToast();
-  const user = getUserInfo();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      contactNumber: "",
-      gender: "",
-      profilePhoto: null,
+      title: "",
+      description: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    setError("");
-    if (values.profilePhoto && values.profilePhoto.length > 0) {
-      const url = await uploadImage(values.profilePhoto[0]);
-      values.profilePhoto = url;
-    } else {
-      values.profilePhoto = "";
-    }
+ 
 
     try {
-      const res = await createModerator(values);
-      console.log(res, "values.........");
+      const res = await createCard(values).unwrap();
 
       if (res?.data) {
-        toast({
-          title: "Success!",
-          description: `Author created successfully`,
-        });
-        if (!user) router.push("/signin");
-      } else {
-        // setError(res?.error.error || "An unexpected error occurred.");
+        toast.success("user added successfully", { position: "bottom-left" });
+        router.push("/");
       }
     } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred.");
-    } finally {
-      setLoading(false);
+      toast.error(err?.message, { position: "bottom-left" });
     }
   };
   return (
@@ -105,14 +63,14 @@ const CreateAuthorForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center items-center">
             <FormField
               control={form.control}
-              name="name"
+              name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your name"
+                      placeholder="Enter card title"
                       {...field}
                     />
                   </FormControl>
@@ -123,112 +81,34 @@ const CreateAuthorForm = () => {
             />
             <FormField
               control={form.control}
-              name="email"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      {...field}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contactNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>contactNumber</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Contact Number.."
+                      placeholder="Enter card description"
                       {...field}
                     />
                   </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Gender</SelectLabel>
-                          {Gender.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="profilePhoto"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>profilePhoto</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => field.onChange(e.target.files)}
-                      className="w-full"
-                    />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
-            Register Now
-            {loading && <Loader className="ml-6 h-5 w-5 animate-spin" />}
-          </Button>
+          <LoadingButton
+            type="submit"
+            className="w-full font-semibold"
+            loading={isLoading}
+          >
+            Add Card
+          </LoadingButton>
         </div>
       </form>
     </Form>
   );
 };
 
-export default CreateAuthorForm;
+export default CreateCardForm;

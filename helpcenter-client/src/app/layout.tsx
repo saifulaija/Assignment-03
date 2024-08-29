@@ -7,6 +7,7 @@ import Header from "@/components/shared/Header";
 import { ToastContainer } from "react-toastify";
 import Providers from "@/lib/provider/Provider";
 import { ThemeProvider } from "@/lib/provider/theme-provider";
+import Footer from "@/components/shared/Footer";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header/>
-            {children}
+           <div> {children}</div>
+           <Footer/>
+
           </ThemeProvider>
         </Providers>
         <ToastContainer />
